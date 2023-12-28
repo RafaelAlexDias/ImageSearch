@@ -17,7 +17,7 @@ body {
     top: 10px;
     right: 10px;
     z-index: 9999;
-    padding: 10px 20px; /* Adjust the padding as needed */
+    padding: 10px 20px;
 }
 
 h1 {
@@ -81,4 +81,14 @@ form button {
     margin: 10px auto 100px;
     cursor: pointer;
     display: none;
+}
+
+#audioPlay {
+    position: fixed;
+    border: none;
+    border-radius: 20px;
+    top: 70px;
+    right: 10px;
+    z-index: 9999;
+    padding: 10px 15px; /* Adjust the padding as needed */
 }
