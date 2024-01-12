@@ -1,9 +1,21 @@
+var darkModeOnOff = 1;
+
 function ToggleLightDarkMode() {
     var element = document.body;
     element.classList.toggle("dark-mode");
+    var darkModeIcon = document.getElementById('darkModeIcon');
+    if (darkModeOnOff === 1) {
+        darkModeOnOff = 0;
+        darkModeIcon.classList.remove('fa-moon');
+        darkModeIcon.classList.add('fa-sun');  // Troque pela classe do ícone de volume mute
+    } else {
+        darkModeOnOff = 1;
+        darkModeIcon.classList.remove('fa-sun');
+        darkModeIcon.classList.add('fa-moon');
+    }
 }
 
-var onOrOff = 0;
+var MusicOnOff = 0;
 const audio = new Audio();
 audio.src = "(no copyright music) Lofi-Chillhop Background Music _Blossom_ _ FREE USE.mp3";
 audio.volume = 0.1;
@@ -14,11 +26,17 @@ audio.addEventListener('ended', function () {
 });
 
 function playAudio() {
-    if (onOrOff === 1) {
+    var volumeIcon = document.getElementById('volumeIcon');
+
+    if (MusicOnOff === 1) {
         audio.pause();
-        onOrOff = 0;
+        MusicOnOff = 0;
+        volumeIcon.classList.remove('fa-volume-high');
+        volumeIcon.classList.add('fa-volume-mute');  // Troque pela classe do ícone de volume mute
     } else {
         audio.play();
-        onOrOff = 1;
+        MusicOnOff = 1;
+        volumeIcon.classList.remove('fa-volume-mute');
+        volumeIcon.classList.add('fa-volume-high');
     }
 }
