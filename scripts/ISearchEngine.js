@@ -69,8 +69,6 @@ class ISearchEngine {
         const h12color = new ColorHistogram(this.redColor, this.greenColor, this.blueColor);
         const colmoments = new ColorMoments();
 
-        const img = new Picture(0, 0, 100, 100, "Images/daniel1.jpg", "test");
-
         //Creating an event that will be used to understand when image is already processed
         const eventname = "processed_picture_" + img.impath;
         const eventP = new Event(eventname);
