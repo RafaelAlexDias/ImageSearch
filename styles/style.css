@@ -22,6 +22,7 @@ body {
 
 h1 {
     font-size: 72px;
+    margin-bottom: 40px;
 }
 
 .texto-sitePor {
@@ -91,4 +92,110 @@ form button {
     right: 10px;
     z-index: 9999;
     padding: 10px 15px; /* Adjust the padding as needed */
+}
+
+.colors {
+    width: 400px;
+    background: #434989;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 0 auto; 
+}
+
+#botaoRed {
+    width: 30px;
+    height: 30px;
+    background-color: #CD090C;
+    color: white;
+    border-radius: 5px;
+}
+
+#botaoOrange {
+    width: 30px;
+    height: 30px;
+    background-color: #FC940F;
+    color: white;
+    border-radius: 5px;
+}
+
+#botaoYellow {
+    width: 30px;
+    height: 30px;
+    background-color: #FFFF06;
+    color: white;
+    border-radius: 5px;
+}
+
+#botaoGreen {
+    width: 30px;
+    height: 30px;
+    background-color: #2FCC15;
+    color: white;
+    border-radius: 5px;
+}
+
+#botaoAzul1 {
+    width: 30px;
+    height: 30px;
+    background-color: #2CC1C6;
+    color: white;
+    border-radius: 5px;
+}
+
+#botaoAzul2 {
+    width: 30px;
+    height: 30px;
+    background-color: #0315FF;
+    color: white;
+    border-radius: 5px;
+}
+
+#botaoRoxo {
+    width: 30px;
+    height: 30px;
+    background-color: #762CA8;
+    color: white;
+    border-radius: 5px;
+}
+
+#botaoRosa {
+    width: 30px;
+    height: 30px;
+    background-color: #FC98BF;
+    color: white;
+    border-radius: 5px;
+}
+
+#botaoBranco {
+    width: 30px;
+    height: 30px;
+    background-color: #FFFFFF;
+    color: white;
+    border-radius: 5px;
+}
+
+#botaoCinza {
+    width: 30px;
+    height: 30px;
+    background-color: #999999;
+    color: white;
+    border-radius: 5px;
+}
+
+#botaoPreto {
+    width: 30px;
+    height: 30px;
+    background-color: #000000;
+    color: white;
+    border-radius: 5px;
+}
+
+#botaoCastanho {
+    width: 30px;
+    height: 30px;
+    background-color: #88541D;
+    color: white;
+    border-radius: 5px;
 }
