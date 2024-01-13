@@ -75,31 +75,30 @@ class ISearchEngine {
 
         //const img = new Picture(0, 0, 100, 100, "Images/daniel1.jpg", "test");
         this.db.loadFile(this.jsonFile)
-        .then(jsonData => {
-            for(let iCat = 0; iCat < this.categories.length; iCat++) {
-                let searchCat = this.db.search(this.categories[iCat], jsonData, this.numImages);
-                for (let iImg = 0; iImg < searchCat.length; iImg++) {
-                    let imagem = new Picture(0, 0, this.imgWidth, this.imgHeight, searchCat[iImg], this.categories[iCat]);
-                    listOfImages.push(imagem);
-                }
-            }
+            .then(jsonData => {
+                this.categories.forEach(category => {
+                    let imagesInCategory = this.db.search(category, jsonData, this.numImages);
+                    imagesInCategory.forEach(imageInfo => {
+                        let image = new Picture(0, 0, this.imgWidth, this.imgHeight, imageInfo, category);
+                        listOfImages.push(image);
+                    });
+                });
 
-            for (let iImg = 0; iImg < listOfImages.length; iImg++) {
-			    //Creating an event that will be used to understand when image is already processed
-                const imagens = listOfImages[iImg];
-                const eventname = "processed_picture_" + imagens.impath;
-                const eventP = new Event(eventname);
-                const self = this;
-                document.addEventListener(eventname, function () {
-                    self.imageProcessed(imagens, eventname);
-                }, false);
+                listOfImages.forEach((image) => {
+                    const eventName = "processed_picture_" + image.impath;
+                    const event = new Event(eventName);
+                    const self = this;
     
-                imagens.computation(cnv, h12color, colmoments, eventP);
-            }
-        })
-        .catch(error => {
-            console.error('Error loading JSON file:', error);
-        });  
+                    document.addEventListener(eventName, function () {
+                        self.imageProcessed(image, eventName);
+                    }, false);
+    
+                    image.computation(cnv, h12color, colmoments, event);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading JSON file:', error);
+            });  
     }
 
     /**
@@ -218,19 +217,19 @@ class ISearchEngine {
         if(this.categories.indexOf(category) === -1){
             return;
         }
-        let readJsonSearch = this.lsDb.read(category);
-        if (Array.isArray(readJsonSearch)) {
-            let searchColor = readJsonSearch.filter(im => im.class === color);
+
+        let readJson = this.lsDb.read(category);
+        if (Array.isArray(readJson)) {
+            let searchColor = readJson.filter(a => a.class === color);
             let paths = searchColor.map(item => item.path);
             this.ShownImages = [];
             
-            for (let i = 0; i < paths.length; i++) {
-                for (let j = 0; j < this.allpictures.stuff.length; j++) {
-                    if (this.allpictures.stuff[j].impath === paths[i]) {
-                        this.ShownImages.push(this.allpictures.stuff[j]);
-                    }
+            paths.forEach(path => {
+                const ImageByColor = this.allpictures.stuff.find(img => img.impath === path);
+                if (ImageByColor) {
+                    this.ShownImages.push(ImageByColor);
                 }
-            }
+            });
     
             let colorIndex = this.colors.indexOf(color);
             if (colorIndex !== -1) {

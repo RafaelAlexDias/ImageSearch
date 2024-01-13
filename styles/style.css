@@ -205,7 +205,7 @@ form button {
     justify-content: center;
     align-items: center;
     margin-top: 20px;
-    height: 100px; /* Ajuste conforme necessário para dar espaço suficiente para o círculo */
+    height: 100px;
 }
 
 .loading-circle {

@@ -71,12 +71,8 @@ class Picture {
             ctx.drawImage(this.imgobj, 0, 0, this.imgobj.width, this.imgobj.height);
 
             const pixels = ctx.getImageData(0, 0, this.imgobj.width, this.imgobj.height);
-            //const pixels = Generate_Image(cnv);
 
             this.hist = histcol.count_Pixels(pixels);
-
-            //this.build_Color_Rect(cnv, this.hist, histcol.redColor, histcol.greenColor, histcol.blueColor);
-            //this.color_moments = colorMom.moments(this.imgobj, cnv);
 
             document.dispatchEvent(eventP);
 
@@ -89,19 +85,14 @@ class Picture {
                 ctx.drawImage(self.imgobj, 0, 0, self.imgobj.width, self.imgobj.height);
                 
                 const pixels = ctx.getImageData(0, 0, self.imgobj.width, self.imgobj.height);
-                //const pixels = Generate_Image(cnv);
 
                 self.hist = histcol.count_Pixels(pixels);
-
-                //self.build_Color_Rect(cnv, self.hist, histcol.redColor, histcol.greenColor, histcol.blueColor);
-                //self.color_moments = colorMom.moments(self.imgobj, cnv);
 
                 document.dispatchEvent(eventP);
 
                 ctx.clearRect(0,0,cnv.width,cnv.height);
             }, false);
         }
-        // this method should be completed by the students
     }
 
     /**
@@ -172,8 +163,8 @@ class ColorHistogram {
         this.greenColor = greenColor; // Array representing green color values
         this.blueColor = blueColor; // Array representing blue color values
         // This class is expected to be completed by the students
-        this.limiar1 = 160;
-        this.limiar2 = 70;
+        this.thresholdTotal = 150;
+        this.thresholdRGB = 75;
     }
 
     /**
@@ -189,20 +180,21 @@ class ColorHistogram {
             let redPxl = pixels.data[idx];
             let greenPxl = pixels.data[idx+1];
             let bluePxl = pixels.data[idx+2];
-
             for(let j=0; j<12; j++){
+                let dist;
                 let redDiff = Math.abs(this.redColor[j] - redPxl);
                 let greenDiff = Math.abs(this.greenColor[j] - greenPxl);
                 let blueDiff = Math.abs(this.blueColor[j] - bluePxl);
 
-                let dist = redDiff + greenDiff + blueDiff;
+                dist = redDiff + greenDiff + blueDiff;
 
-                if(dist < this.limiar1 && redDiff < this.limiar2 && greenDiff < this.limiar2 && blueDiff < this.limiar2){
-                    Histogram[j] = Histogram[j] + 1;
+                if(dist < this.thresholdTotal && redDiff < this.thresholdRGB && greenDiff < this.thresholdRGB && blueDiff < this.thresholdRGB){
+                    Histogram[j] += 1;
                 }
             }
         }
         
+        //Normalizar as cores dos pixeis
         Histogram = Histogram.map(function(pixelColor){
             return pixelColor / (pixels.data.length / 4);
         });
