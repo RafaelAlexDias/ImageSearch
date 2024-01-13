@@ -7,7 +7,7 @@ function ToggleLightDarkMode() {
     if (darkModeOnOff === 1) {
         darkModeOnOff = 0;
         darkModeIcon.classList.remove('fa-moon');
-        darkModeIcon.classList.add('fa-sun');  // Troque pela classe do ícone de volume mute
+        darkModeIcon.classList.add('fa-sun');
     } else {
         darkModeOnOff = 1;
         darkModeIcon.classList.remove('fa-sun');
@@ -32,7 +32,7 @@ function playAudio() {
         audio.pause();
         MusicOnOff = 0;
         volumeIcon.classList.remove('fa-volume-high');
-        volumeIcon.classList.add('fa-volume-mute');  // Troque pela classe do ícone de volume mute
+        volumeIcon.classList.add('fa-volume-mute');
     } else {
         audio.play();
         MusicOnOff = 1;
