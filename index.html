@@ -38,28 +38,44 @@
             <i id="darkModeIcon" class="fas fa-moon"></i>
         </button>
         <button id="audioPlay" onclick="playAudio()">
-            <i id="volumeIcon" class="fas fa-volume-high"></i>
+            <i id="volumeIcon" class="fas fa-volume-mute"></i>
         </button>
 
         <div class="colors">
-            <button id="botaoRed" onclick="handleCustomButtonClick()"></button>
-            <button id="botaoOrange" onclick="handleCustomButtonClick()"></button>
-            <button id="botaoYellow" onclick="handleCustomButtonClick()"></button>
-            <button id="botaoGreen" onclick="handleCustomButtonClick()"></button>
-            <button id="botaoAzul1" onclick="handleCustomButtonClick()"></button>
-            <button id="botaoAzul2" onclick="handleCustomButtonClick()"></button>
-            <button id="botaoRoxo" onclick="handleCustomButtonClick()"></button>
-            <button id="botaoRosa" onclick="handleCustomButtonClick()"></button>
-            <button id="botaoBranco" onclick="handleCustomButtonClick()"></button>
-            <button id="botaoCinza" onclick="handleCustomButtonClick()"></button>
-            <button id="botaoPreto" onclick="handleCustomButtonClick()"></button>
-            <button id="botaoCastanho" onclick="handleCustomButtonClick()"></button>
+            <button id="red" onclick="SearchColor('red')"></button>
+            <button id="orange" onclick="SearchColor('orange')"></button>
+            <button id="yellow" onclick="SearchColor('yellow')"></button>
+            <button id="green" onclick="SearchColor('green')"></button>
+            <button id="Blue-green" onclick="SearchColor('Blue-green')"></button>
+            <button id="blue" onclick="SearchColor('blue')"></button>
+            <button id="purple" onclick="SearchColor('purple')"></button>
+            <button id="pink" onclick="SearchColor('pink')"></button>
+            <button id="white" onclick="SearchColor('white')"></button>
+            <button id="grey" onclick="SearchColor('grey')"></button>
+            <button id="black" onclick="SearchColor('black')"></button>
+            <button id="brown" onclick="SearchColor('brown')"></button>
         </div>
 
         <section id="query">
             <form id="search-form">
-                <input type="text" id="search-box" placeholder="Digite sua pesquisa...">
-                <button type="button" onclick="search()">Search</button>
+                <input type="text" id="searchText" placeholder="Digite sua pesquisa..." class="search" list="input">
+                <datalist id="input">
+                    <option value="beach">Beach</option>
+                    <option value="birthday">Birthday</option>
+                    <option value="face">Face</option>
+                    <option value="indoor">Indoor</option>
+                    <option value="manmade/manmade">Man Made</option>
+                    <option value="manmade/artificial">Man Made/Artificial</option>
+                    <option value="manmade/urban">Man Made/Urban</option>
+                    <option value="marriage">Marriage</option>
+                    <option value="nature">Nature</option>
+                    <option value="no_people">No People</option>
+                    <option value="outdoor">Outdoor</option>
+                    <option value="party">Party</option>
+                    <option value="people">People</option>
+                    <option value="snow">Snow</option>
+                </datalist>
+                <button type="button" onclick="searchKeyWord()">Search</button>
             </form>
             <div id="search-result"></div>
             <button id="show-more-btn">Show more</button>

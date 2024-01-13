@@ -36,14 +36,17 @@ class ISearchEngine {
         this.lsDb = new LocalStorageDatabaseJSON();
 
         //Number of images per category for image processing
-        this.numImages = 1;
+        this.numImages = 100;
         //Number of images to show in canvas as a search result
-        this.numShownPic = 35;
+        this.numShownPic = 30;
 
         //Width of image in canvas
         this.imgWidth = 190;
         //Height of image in canvas
         this.imgHeight = 140;
+
+        //array para as imagens
+        this.ShownImages = [];
     }
 
     /**
@@ -68,16 +71,35 @@ class ISearchEngine {
         //Images processing classes
         const h12color = new ColorHistogram(this.redColor, this.greenColor, this.blueColor);
         const colmoments = new ColorMoments();
+        let listOfImages=[];
 
-        //Creating an event that will be used to understand when image is already processed
-        const eventname = "processed_picture_" + img.impath;
-        const eventP = new Event(eventname);
-        const self = this;
-        document.addEventListener(eventname, function () {
-            //self.imageProcessed(img, eventname);
-        }, false);
+        //const img = new Picture(0, 0, 100, 100, "Images/daniel1.jpg", "test");
+        this.db.loadFile(this.jsonFile)
+        .then(jsonData => {
+            for(let iCat = 0; iCat < this.categories.length; iCat++) {
+                let searchCat = this.db.search(this.categories[iCat], jsonData, this.numImages);
+                for (let iImg = 0; iImg < searchCat.length; iImg++) {
+                    let imagem = new Picture(0, 0, this.imgWidth, this.imgHeight, searchCat[iImg], this.categories[iCat]);
+                    listOfImages.push(imagem);
+                }
+            }
 
-        img.computation(cnv, h12color, colmoments, eventP);
+            for (let iImg = 0; iImg < listOfImages.length; iImg++) {
+			    //Creating an event that will be used to understand when image is already processed
+                const imagens = listOfImages[iImg];
+                const eventname = "processed_picture_" + imagens.impath;
+                const eventP = new Event(eventname);
+                const self = this;
+                document.addEventListener(eventname, function () {
+                    self.imageProcessed(imagens, eventname);
+                }, false);
+    
+                imagens.computation(cnv, h12color, colmoments, eventP);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading JSON file:', error);
+        });  
     }
 
     /**
@@ -93,8 +115,10 @@ class ISearchEngine {
         this.allpictures.insert(img);
         console.log("image processed " + this.allpictures.stuff.length + eventname);
         if (this.allpictures.stuff.length === (this.numImages * this.categories.length)) {
-            //this.createColorDatabaseLS();
+            this.createColorDatabaseLS();
             //this.createIExampledatabaseLS();
+            const loading = document.querySelector(".loading-circle");
+            loading.style.display = "none";
         }
     }
 
@@ -103,7 +127,28 @@ class ISearchEngine {
      */
     createColorDatabaseLS() {
         //Method to create the JSON database in the localStorage for color queries
-        // this method should be completed by the students
+
+        for (let iCat = 0; iCat < this.categories.length; iCat++) {
+			let colorList = [];
+			let jsonDB = [];
+
+			for (let iImg = 0; iImg < this.allpictures.stuff.length; iImg++) {
+				if (this.allpictures.stuff[iImg].category === this.categories[iCat]){
+                    colorList.push(this.allpictures.stuff[iImg]);
+                }
+			}
+			for (let iCor = 0; iCor < this.colors.length; iCor++) {
+				this.sortbyColor(iCor, colorList);
+				for (let img2 = 0; img2 < this.numShownPic; img2++) {
+                    let jsonDataBase = {
+                        class: this.colors[iCor],
+                        path: colorList[img2].impath
+                    };
+                    jsonDB.push(jsonDataBase);
+				}
+			}
+			this.lsDb.save(this.categories[iCat], jsonDB);
+		}
     }
 
     /**
@@ -112,11 +157,6 @@ class ISearchEngine {
      */
     createIExampledatabaseLS() {
         //Method to create the JSON database in the localStorage for Image Example queries
-
-        const list_images = new Pool(this.allpictures.stuff.length);
-        this.zscoreNormalization();
-
-        // this method should be completed by the students
     }
 
     /**
@@ -174,8 +214,31 @@ class ISearchEngine {
      */
     searchColor(category, color) {
         //Method to search images based on a selected color
-
-        // this method should be completed by the students
+        category = category.toLowerCase();
+        if(this.categories.indexOf(category) === -1){
+            return;
+        }
+        let readJsonSearch = this.lsDb.read(category);
+        if (Array.isArray(readJsonSearch)) {
+            let searchColor = readJsonSearch.filter(im => im.class === color);
+            let paths = searchColor.map(item => item.path);
+            this.ShownImages = [];
+            
+            for (let i = 0; i < paths.length; i++) {
+                for (let j = 0; j < this.allpictures.stuff.length; j++) {
+                    if (this.allpictures.stuff[j].impath === paths[i]) {
+                        this.ShownImages.push(this.allpictures.stuff[j]);
+                    }
+                }
+            }
+    
+            let colorIndex = this.colors.indexOf(color);
+            if (colorIndex !== -1) {
+                this.sortbyColor(colorIndex, this.ShownImages);
+            }
+        } else {
+            console.error('Invalid format for image data in localStorage');
+        }
     }
 
     /**
@@ -184,8 +247,18 @@ class ISearchEngine {
      */
     searchKeywords(category) {
         //Method to search images based on keywords
+        this.ShownImages = [];
 
-        // this method should be completed by the students
+        category = category.toLowerCase();
+        if(this.categories.indexOf(category)=== -1){
+            return;
+        }
+
+        for (let i = 0; i < this.allpictures.stuff.length; i++) {
+			if (this.allpictures.stuff[i].category === category && this.ShownImages.length < this.numShownPic) {
+				this.ShownImages.push(this.allpictures.stuff[i]);
+			}
+		}
     }
 
     /**
@@ -208,13 +281,6 @@ class ISearchEngine {
     calcManhattanDist(img1, img2) {
         //Method to compute the Manhattan difference between 2 images which is one way of measure the similarity
         //between images.
-        let manhattan = 0;
-
-        for (let i = 0; i < img1.color_moments.length; i++) {
-            manhattan += Math.abs(img1.color_moments[i] - img2.color_moments[i]);
-        }
-        manhattan /= img1.color_moments.length;
-        return manhattan;
     }
 
     /**
@@ -245,8 +311,27 @@ class ISearchEngine {
      * @param {Canvas} canvas - The canvas element to render the grid view on.
      */
     gridView(canvas) {
-        //Method to visualize images in canvas organized in columns and rows
-        // this method should be completed by the students
+        let ctx = canvas.getContext('2d');
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		let x = 20;
+		let y = 0;
+		let xBtw = 20;
+        let yBtw = 20;
+
+		for (let i = 0; i < this.ShownImages.length; i++) {
+			let lastXPos= x + this.ShownImages[i].w;
+
+            if(lastXPos > canvas.width){
+                y += this.ShownImages[i].h + yBtw;
+                x = 20
+            }
+
+            this.ShownImages[i].setPosition(x,y);
+            this.ShownImages[i].draw(canvas);
+
+            x += xBtw + this.ShownImages[i].w;
+		}
     }
 
 }
@@ -272,7 +357,7 @@ class Pool {
         if (this.stuff.length < this.size) {
             this.stuff.push(obj);
         } else {
-            alert("The application is full: there isn't more memory space to include objects");
+            alert("The appliiion is full: there isn't more memory space to include objects");
         }
     }
 
@@ -284,7 +369,7 @@ class Pool {
         if (this.stuff.length !== 0) {
             this.stuff.pop();
         } else {
-            alert("There aren't objects in the application to delete");
+            alert("There aren't objects in the appliiion to delete");
         }
     }
 

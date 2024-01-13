@@ -80,6 +80,8 @@ class Picture {
 
             document.dispatchEvent(eventP);
 
+            ctx.clearRect(0,0,cnv.width,cnv.height);
+
         } else {
             console.log("Debug: First Time");
             const self = this;
@@ -95,6 +97,8 @@ class Picture {
                 //self.color_moments = colorMom.moments(self.imgobj, cnv);
 
                 document.dispatchEvent(eventP);
+
+                ctx.clearRect(0,0,cnv.width,cnv.height);
             }, false);
         }
         // this method should be completed by the students
@@ -168,6 +172,8 @@ class ColorHistogram {
         this.greenColor = greenColor; // Array representing green color values
         this.blueColor = blueColor; // Array representing blue color values
         // This class is expected to be completed by the students
+        this.limiar1 = 160;
+        this.limiar2 = 70;
     }
 
     /**
@@ -177,7 +183,31 @@ class ColorHistogram {
      * @returns {Array} Rhe color histogram from a given set of pixels.
      */
     count_Pixels(pixels) {
+        let Histogram = Array(12).fill(0);
 
+        for(let idx = 0; idx < pixels.data.length; idx += 4){
+            let redPxl = pixels.data[idx];
+            let greenPxl = pixels.data[idx+1];
+            let bluePxl = pixels.data[idx+2];
+
+            for(let j=0; j<12; j++){
+                let redDiff = Math.abs(this.redColor[j] - redPxl);
+                let greenDiff = Math.abs(this.greenColor[j] - greenPxl);
+                let blueDiff = Math.abs(this.blueColor[j] - bluePxl);
+
+                let dist = redDiff + greenDiff + blueDiff;
+
+                if(dist < this.limiar1 && redDiff < this.limiar2 && greenDiff < this.limiar2 && blueDiff < this.limiar2){
+                    Histogram[j] = Histogram[j] + 1;
+                }
+            }
+        }
+        
+        Histogram = Histogram.map(function(pixelColor){
+            return pixelColor / (pixels.data.length / 4);
+        });
+        
+        return Histogram;
     }
 }
 

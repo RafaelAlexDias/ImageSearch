@@ -16,6 +16,22 @@ function main() {
     app.init(canvas);
 }
 
+function searchKeyWord(){
+    const text = document.getElementById("searchText").value;
+    const cnv = document.getElementById('canvas');
+
+    app.searchKeywords(text);
+    app.gridView(cnv);
+}
+
+function SearchColor(color){
+    const text = document.getElementById("searchText").value;
+    const cnv = document.getElementById('canvas');
+
+    app.searchColor(text, color);
+    app.gridView(cnv);
+}
+
 /**
  * Function that generates an artificial image and draw it in canvas.
  * Useful to test the image processing algorithms.
